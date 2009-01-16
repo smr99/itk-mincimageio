@@ -311,6 +311,33 @@ TEST_F( MINCImageIOTest, ShapeTest3D )
     }
 }
 
+TEST_F( MINCImageIOTest, OriginTest2DUnrotated )
+{
+  std::string originArgs = "-zxy -xstart -1 -ystart 2 -xstep 3";
+
+  double originXYZ[] = { -1, 2 };
+  OriginTest( CreateFile( originArgs, 3, 7 ),
+	      originXYZ, originXYZ+2 );
+}
+
+TEST_F( MINCImageIOTest, OriginTest2DRotated45 )
+{
+  // Rotate by 45 degrees w.r.t. world axes
+  std::string originArgs = "-zxy -xdircos 0.70711 0.70711 0 -ydircos -0.70711 0.70711 0";
+
+  double origin00[] = { 0, 0 };
+  OriginTest( CreateFile( originArgs, 3, 7 ),
+	      origin00, origin00+2 );
+
+  double origin10[] = { 0.70711, 0.70711 };
+  OriginTest( CreateFile( originArgs + " -xstep 1", 3, 7 ),
+	      origin10, origin10+2 );
+
+  double origin01[] = { -0.70711, 0.70711 };
+  OriginTest( CreateFile( originArgs + " -ystep 1", 3, 7 ),
+	      origin01, origin01+2 );
+}
+
 TEST_F( MINCImageIOTest, OriginTest3D )
 {
   SCOPED_TRACE( "OriginTest3D" );
